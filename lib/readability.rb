@@ -17,6 +17,7 @@ module Readability
       :min_image_height           => 80,
       :min_image_ratio            => 0,
       :ignore_image_format        => [],
+      :ignore_image_regex         => nil,
       :blacklist                  => nil,
       :whitelist                  => nil,
       :get_largest_image          => false
@@ -155,7 +156,7 @@ module Readability
           end
 
           tested_images.push(url)
-          if image_meets_criteria?(image)
+          if image_meets_criteria?(image, url)
             if options[:get_largest_image]
               area = image[:height] * image[:width]
               if area > largest_image_area
@@ -213,9 +214,9 @@ module Readability
       nil
     end
 
-    def image_meets_criteria?(image)
+    def image_meets_criteria?(image, url)
       return false if options[:ignore_image_format].include?(image[:format].downcase)
-      image[:width] >= (options[:min_image_width] || 0) && image[:height] >= (options[:min_image_height] || 0) && (options[:min_image_ratio] || 0) * image[:width] <= image[:height]
+      image[:width] >= (options[:min_image_width] || 0) && image[:height] >= (options[:min_image_height] || 0) && (options[:min_image_ratio] || 0) * image[:width] <= image[:height] && !(url =~ options[:ignore_image_regex])
     end
 
     def title
