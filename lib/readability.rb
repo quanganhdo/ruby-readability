@@ -15,6 +15,7 @@ module Readability
       :remove_empty_nodes         => true,
       :min_image_width            => 130,
       :min_image_height           => 80,
+      :min_image_ratio            => 0,
       :ignore_image_format        => [],
       :blacklist                  => nil,
       :whitelist                  => nil,
@@ -214,7 +215,7 @@ module Readability
 
     def image_meets_criteria?(image)
       return false if options[:ignore_image_format].include?(image[:format].downcase)
-      image[:width] >= (options[:min_image_width] || 0) && image[:height] >= (options[:min_image_height] || 0)
+      image[:width] >= (options[:min_image_width] || 0) && image[:height] >= (options[:min_image_height] || 0) && (options[:min_image_ratio] || 0) * image[:width] <= image[:height]
     end
 
     def title
